@@ -1,0 +1,846 @@
+import React, { useState, useEffect } from 'react'import React, { useState, useEffect } from 'react'
+
+import { Button, Card, Container, Row, Col, Form, Alert, Tab, Nav, Modal } from 'react-bootstrap'import { Button, Card, Container, Row, Col, Form, Alert } from 'react-bootstrap'
+
+import { useNavigate } from 'react-router-dom'import type { Patient, Appointment, MedicalRecord } from '../../types/medical'
+
+import { getUserFromToken } from '../../services/api'
+import { patientsService, appointmentsService, medicalRecordsService } from '../../services/medical'
+
+import { patientsService, appointmentsService, medicalRecordsService } from '../../services/medical'import { useNavigate } from 'react-router-dom'
+
+import type { Patient, Appointment, MedicalRecord } from '../../types/medical'import { getUserFromToken } from '../../services/api'
+
+import { format } from 'date-fns'import type { Value } from 'react-calendar'
+
+import { es } from 'date-fns/locale'import Calendar from 'react-calendar'
+
+import 'react-calendar/dist/Calendar.css'
+
+type DoctorUser = {
+
+  id: stringtype DoctorUser = {
+
+  role: 'doctor'  id: string;
+
+  name: string  role: 'doctor';
+
+}  name: string;
+
+}
+
+const PanelPacientes: React.FC = () => {
+
+  const navigate = useNavigate()const PanelPacientes: React.FC = () => {
+
+  const [user, setUser] = useState<DoctorUser | null>(null)  const navigate = useNavigate()
+
+  const [activeTab, setActiveTab] = useState('buscar')  const [user, setUser] = useState<DoctorUser | null>(null)
+
+  const [searchTerm, setSearchTerm] = useState('')  const [patients, setPatients] = useState<Patient[]>([])
+
+  const [searchResults, setSearchResults] = useState<Patient[]>([])  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null)
+
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null)  const [appointments, setAppointments] = useState<Appointment[]>([])
+
+  const [showNewPatient, setShowNewPatient] = useState(false)  const [medicalRecords, setMedicalRecords] = useState<MedicalRecord[]>([])
+
+  const [loading, setLoading] = useState(false)  const [date, setDate] = useState<Date | null>(new Date())
+
+  const [error, setError] = useState('')  const [searchTerm, setSearchTerm] = useState('')
+
+  const [appointments, setAppointments] = useState<Appointment[]>([])  const [showNewPatient, setShowNewPatient] = useState(false)
+
+  const [medicalRecords, setMedicalRecords] = useState<MedicalRecord[]>([])  const [newPatient, setNewPatient] = useState({
+
+  const [showEvolutionModal, setShowEvolutionModal] = useState(false)    name: '',
+
+  const [evolutionNote, setEvolutionNote] = useState('')    dni: '',
+
+    birthDate: '',
+
+  // Formulario de nuevo paciente    phone: '',
+
+  const [newPatient, setNewPatient] = useState({  })
+
+    name: '',  const [error, setError] = useState('')
+
+    dni: '',
+
+    birthDate: '',  useEffect(() => {
+
+    phone: '',    const userData = getUserFromToken()
+
+    email: '',    if (!userData || userData.role !== 'doctor') {
+
+    bloodType: '',      navigate('/login')
+
+    allergies: '',      return
+
+    medicalHistory: ''    }
+
+  })    setUser(userData as DoctorUser)
+
+    loadPatients()
+
+  useEffect(() => {  }, [navigate])
+
+    const userData = getUserFromToken()
+
+    if (!userData || userData.role !== 'doctor') {  const loadPatients = async () => {
+
+      navigate('/login')    try {
+
+      return      const data = await patientsService.list()
+
+    }      setPatients(data)
+
+    setUser(userData as DoctorUser)    } catch (err) {
+
+    loadTodayAppointments()      setError('Error al cargar pacientes')
+
+  }, [navigate])    }
+
+  }
+
+  const loadTodayAppointments = async () => {
+
+    if (!user) return  const loadPatientData = async (patient: Patient) => {
+
+    try {    setSelectedPatient(patient)
+
+      const today = new Date().toISOString().split('T')[0]    try {
+
+      const appts = await appointmentsService.list({ date: today, doctorId: user.id })      const [appts, records] = await Promise.all([
+
+      setAppointments(appts)        appointmentsService.list({ patientId: patient.id }),
+
+    } catch (err) {        medicalRecordsService.listByPatient(patient.id)
+
+      setError('Error al cargar citas de hoy')      ])
+
+    }      setAppointments(appts)
+
+  }      setMedicalRecords(records)
+
+    } catch (err) {
+
+  const handleSearch = async () => {      setError('Error al cargar datos del paciente')
+
+    if (!searchTerm.trim()) return    }
+
+    setLoading(true)  }
+
+    try {
+
+      const patients = await patientsService.list({ search: searchTerm })  const handleCreatePatient = async (e: React.FormEvent) => {
+
+      setSearchResults(patients)    e.preventDefault()
+
+    } catch (err) {    try {
+
+      setError('Error al buscar pacientes')      await patientsService.create(newPatient)
+
+    } finally {      setShowNewPatient(false)
+
+      setLoading(false)      setNewPatient({ name: '', dni: '', birthDate: '', phone: '' })
+
+    }      loadPatients()
+
+  }    } catch (err) {
+
+      setError('Error al crear paciente')
+
+  const handleSelectPatient = async (patient: Patient) => {    }
+
+    setSelectedPatient(patient)  }
+
+    try {
+
+      const [appts, records] = await Promise.all([  const handleCreateAppointment = async () => {
+
+        appointmentsService.list({ patientId: patient.id }),    if (!selectedPatient || !user) return
+
+        medicalRecordsService.listByPatient(patient.id)    try {
+
+      ])      await appointmentsService.create({
+
+      setAppointments(appts.filter(a => a.doctorId === user?.id))        patientId: selectedPatient.id,
+
+      setMedicalRecords(records)        doctorId: user.id,
+
+      setActiveTab('expediente')        date: date?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0],
+
+    } catch (err) {        time: '09:00', // Default time, ideally this would be selected by the user
+
+      setError('Error al cargar datos del paciente')        status: 'scheduled'
+
+    }      })
+
+  }      loadPatientData(selectedPatient)
+
+    } catch (err) {
+
+  const handleCreatePatient = async (e: React.FormEvent) => {      setError('Error al agendar cita')
+
+    e.preventDefault()    }
+
+    try {  }
+
+      const patient = await patientsService.create({
+
+        ...newPatient,  const filteredPatients = patients.filter(p => 
+
+        allergies: newPatient.allergies.split(',').map(a => a.trim()).filter(Boolean)    p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+
+      })    p.dni.includes(searchTerm)
+
+      setShowNewPatient(false)  )
+
+      setNewPatient({
+
+        name: '',  return (
+
+        dni: '',    <Container fluid className="py-4">
+
+        birthDate: '',      <Row>
+
+        phone: '',        {/* Panel de búsqueda y registro */}
+
+        email: '',        <Col md={3}>
+
+        bloodType: '',          <Card className="mb-3">
+
+        allergies: '',            <Card.Body>
+
+        medicalHistory: ''              <Form.Group className="mb-3">
+
+      })                <Form.Label>Buscar Paciente</Form.Label>
+
+      handleSelectPatient(patient)                <Form.Control
+
+    } catch (err) {                  type="text"
+
+      setError('Error al crear paciente')                  placeholder="Nombre o DNI..."
+
+    }                  value={searchTerm}
+
+  }                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
+
+                />
+
+  const handleCreateEvolution = async () => {              </Form.Group>
+
+    if (!selectedPatient || !user || !evolutionNote.trim()) return              <Button 
+
+    try {                variant="primary" 
+
+      await medicalRecordsService.create({                className="w-100"
+
+        patientId: selectedPatient.id,                onClick={() => setShowNewPatient(true)}
+
+        doctorId: user.id,              >
+
+        date: new Date().toISOString(),                Registrar Nuevo Paciente
+
+        evolution: evolutionNote              </Button>
+
+      })            </Card.Body>
+
+      setEvolutionNote('')          </Card>
+
+      setShowEvolutionModal(false)
+
+      // Recargar registros médicos          <Card>
+
+      const records = await medicalRecordsService.listByPatient(selectedPatient.id)            <Card.Body>
+
+      setMedicalRecords(records)              <Card.Title>Mis Pacientes</Card.Title>
+
+    } catch (err) {              <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+
+      setError('Error al guardar evolución')                {filteredPatients.map(patient => (
+
+    }                  <Button
+
+  }                    key={patient.id}
+
+                    variant="outline-primary"
+
+  return (                    className="w-100 mb-2 text-start"
+
+    <Container fluid className="py-4">                    onClick={() => loadPatientData(patient)}
+
+      <Tab.Container activeKey={activeTab} onSelect={(k) => k && setActiveTab(k)}>                  >
+
+        <Row>                    {patient.name}<br/>
+
+          <Col md={3}>                    <small>DNI: {patient.dni}</small>
+
+            <Nav variant="pills" className="flex-column">                  </Button>
+
+              <Nav.Item>                ))}
+
+                <Nav.Link eventKey="buscar">Buscar Paciente</Nav.Link>              </div>
+
+              </Nav.Item>            </Card.Body>
+
+              <Nav.Item>          </Card>
+
+                <Nav.Link eventKey="citas">Citas de Hoy</Nav.Link>        </Col>
+
+              </Nav.Item>
+
+              {selectedPatient && (        {/* Panel de información y citas */}
+
+                <Nav.Item>        <Col md={9}>
+
+                  <Nav.Link eventKey="expediente">Expediente Médico</Nav.Link>          {error && <Alert variant="danger">{error}</Alert>}
+
+                </Nav.Item>          
+
+              )}          {showNewPatient ? (
+
+            </Nav>            <Card>
+
+              <Card.Body>
+
+            {/* Información del paciente seleccionado */}                <Card.Title>Registrar Nuevo Paciente</Card.Title>
+
+            {selectedPatient && (                <Form onSubmit={handleCreatePatient}>
+
+              <Card className="mt-4">                  <Row>
+
+                <Card.Body>                    <Col md={6}>
+
+                  <Card.Title>{selectedPatient.name}</Card.Title>                      <Form.Group className="mb-3">
+
+                  <Card.Text>                        <Form.Label>Nombre Completo</Form.Label>
+
+                    <small>DNI: {selectedPatient.dni}</small><br/>                        <Form.Control
+
+                    <small>Tel: {selectedPatient.phone}</small>                          required
+
+                  </Card.Text>                          type="text"
+
+                  <Button                           value={newPatient.name}
+
+                    variant="primary"                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewPatient({...newPatient, name: e.target.value})}
+
+                    size="sm"                         />
+
+                    onClick={() => setShowEvolutionModal(true)}                      </Form.Group>
+
+                  >                    </Col>
+
+                    Nueva Evolución                    <Col md={6}>
+
+                  </Button>                      <Form.Group className="mb-3">
+
+                </Card.Body>                        <Form.Label>DNI</Form.Label>
+
+              </Card>                        <Form.Control
+
+            )}                          required
+
+          </Col>                          type="text"
+
+                          value={newPatient.dni}
+
+          <Col md={9}>                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewPatient({...newPatient, dni: e.target.value})}
+
+            {error && <Alert variant="danger" onClose={() => setError('')} dismissible>{error}</Alert>}                        />
+
+                      </Form.Group>
+
+            <Tab.Content>                    </Col>
+
+              {/* Tab de Búsqueda */}                  </Row>
+
+              <Tab.Pane eventKey="buscar">                  <Row>
+
+                <Card>                    <Col md={6}>
+
+                  <Card.Body>                      <Form.Group className="mb-3">
+
+                    <Card.Title>Búsqueda de Pacientes</Card.Title>                        <Form.Label>Fecha de Nacimiento</Form.Label>
+
+                    <Form className="mb-4">                        <Form.Control
+
+                      <Row>                          required
+
+                        <Col md={8}>                          type="date"
+
+                          <Form.Control                          value={newPatient.birthDate}
+
+                            type="text"                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewPatient({...newPatient, birthDate: e.target.value})}
+
+                            placeholder="Buscar por nombre o DNI..."                        />
+
+                            value={searchTerm}                      </Form.Group>
+
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}                    </Col>
+
+                          />                    <Col md={6}>
+
+                        </Col>                      <Form.Group className="mb-3">
+
+                        <Col md={4}>                        <Form.Label>Teléfono</Form.Label>
+
+                          <Button onClick={handleSearch} disabled={loading}>                        <Form.Control
+
+                            {loading ? 'Buscando...' : 'Buscar'}                          required
+
+                          </Button>                          type="tel"
+
+                          <Button                           value={newPatient.phone}
+
+                            variant="outline-primary"                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewPatient({...newPatient, phone: e.target.value})}
+
+                            className="ms-2"                        />
+
+                            onClick={() => setShowNewPatient(true)}                      </Form.Group>
+
+                          >                    </Col>
+
+                            Nuevo                  </Row>
+
+                          </Button>                  <div className="d-flex justify-content-end gap-2">
+
+                        </Col>                    <Button variant="secondary" onClick={() => setShowNewPatient(false)}>
+
+                      </Row>                      Cancelar
+
+                    </Form>                    </Button>
+
+                    <Button variant="primary" type="submit">
+
+                    {searchResults.length > 0 && (                      Guardar
+
+                      <div>                    </Button>
+
+                        <h6>Resultados:</h6>                  </div>
+
+                        {searchResults.map(patient => (                </Form>
+
+                          <Card key={patient.id} className="mb-2">              </Card.Body>
+
+                            <Card.Body>            </Card>
+
+                              <Row>          ) : selectedPatient ? (
+
+                                <Col>            <>
+
+                                  <h6 className="mb-0">{patient.name}</h6>              <Card className="mb-3">
+
+                                  <small>DNI: {patient.dni}</small>                <Card.Body>
+
+                                </Col>                  <Card.Title>{selectedPatient.name}</Card.Title>
+
+                                <Col xs="auto">                  <Row>
+
+                                  <Button                     <Col md={4}>
+
+                                    variant="primary"                       <p><strong>DNI:</strong> {selectedPatient.dni}</p>
+
+                                    size="sm"                      <p><strong>Teléfono:</strong> {selectedPatient.phone}</p>
+
+                                    onClick={() => handleSelectPatient(patient)}                    </Col>
+
+                                  >                    <Col md={4}>
+
+                                    Ver Expediente                      <p><strong>Fecha Nac.:</strong> {selectedPatient.birthDate}</p>
+
+                                  </Button>                      <p><strong>Correo:</strong> {selectedPatient.email || 'N/A'}</p>
+
+                                </Col>                    </Col>
+
+                              </Row>                    <Col md={4}>
+
+                            </Card.Body>                      <p><strong>Tipo Sangre:</strong> {selectedPatient.bloodType || 'N/A'}</p>
+
+                          </Card>                      <p><strong>Alergias:</strong> {selectedPatient.allergies?.join(', ') || 'Ninguna'}</p>
+
+                        ))}                    </Col>
+
+                      </div>                  </Row>
+
+                    )}                </Card.Body>
+
+                  </Card.Body>              </Card>
+
+                </Card>
+
+              </Tab.Pane>              <Row>
+
+                <Col md={6}>
+
+              {/* Tab de Citas de Hoy */}                  <Card className="mb-3">
+
+              <Tab.Pane eventKey="citas">                    <Card.Body>
+
+                <Card>                      <Card.Title>Calendario de Citas</Card.Title>
+
+                  <Card.Body>                      <Calendar
+
+                    <Card.Title>Citas de Hoy</Card.Title>                        onChange={(value: Date | null) => value && setDate(value)}
+
+                    {appointments.length === 0 ? (                        value={date}
+
+                      <p>No hay citas programadas para hoy</p>                        className="w-100"
+
+                    ) : (                      />
+
+                      appointments.map(apt => (                      <div className="mt-3">
+
+                        <Card key={apt.id} className="mb-2">                        <Button variant="primary" onClick={handleCreateAppointment}>
+
+                          <Card.Body>                          Agendar Cita
+
+                            <Row>                        </Button>
+
+                              <Col>                      </div>
+
+                                <h6 className="mb-0">{apt.time}</h6>                    </Card.Body>
+
+                                <small>Paciente: {                  </Card>
+
+                                  searchResults.find(p => p.id === apt.patientId)?.name || 'Cargando...'                </Col>
+
+                                }</small>                
+
+                              </Col>                <Col md={6}>
+
+                              <Col xs="auto">                  <Card className="mb-3">
+
+                                <Button                     <Card.Body>
+
+                                  variant="outline-primary"                       <Card.Title>Historial de Citas</Card.Title>
+
+                                  size="sm"                      <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+
+                                  onClick={() => {                        {appointments.map(apt => (
+
+                                    const patient = searchResults.find(p => p.id === apt.patientId)                          <Card key={apt.id} className="mb-2">
+
+                                    if (patient) handleSelectPatient(patient)                            <Card.Body>
+
+                                  }}                              <div className="d-flex justify-content-between">
+
+                                >                                <div>
+
+                                  Ver Expediente                                  <strong>{new Date(apt.date).toLocaleDateString()}</strong>
+
+                                </Button>                                  <br/>
+
+                              </Col>                                  <small>{apt.time} - {apt.status}</small>
+
+                            </Row>                                </div>
+
+                          </Card.Body>                                {apt.status === 'scheduled' && (
+
+                        </Card>                                  <Button
+
+                      ))                                    size="sm"
+
+                    )}                                    variant="outline-primary"
+
+                  </Card.Body>                                    onClick={() => {/* TODO: Navigate to appointment details */}}
+
+                </Card>                                  >
+
+              </Tab.Pane>                                    Ver Detalles
+
+                                  </Button>
+
+              {/* Tab de Expediente Médico */}                                )}
+
+              <Tab.Pane eventKey="expediente">                              </div>
+
+                {selectedPatient && (                              {apt.observations && (
+
+                  <>                                <p className="mb-0 mt-2">{apt.observations}</p>
+
+                    <Card className="mb-3">                              )}
+
+                      <Card.Body>                            </Card.Body>
+
+                        <Card.Title>Información General</Card.Title>                          </Card>
+
+                        <Row>                        ))}
+
+                          <Col md={4}>                      </div>
+
+                            <p><strong>Nombre:</strong> {selectedPatient.name}</p>                    </Card.Body>
+
+                            <p><strong>DNI:</strong> {selectedPatient.dni}</p>                  </Card>
+
+                            <p><strong>Teléfono:</strong> {selectedPatient.phone}</p>
+
+                          </Col>                  <Card>
+
+                          <Col md={4}>                    <Card.Body>
+
+                            <p><strong>Fecha Nac.:</strong> {selectedPatient.birthDate}</p>                      <Card.Title>Historia Clínica</Card.Title>
+
+                            <p><strong>Email:</strong> {selectedPatient.email || 'N/A'}</p>                      <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+
+                            <p><strong>Tipo Sangre:</strong> {selectedPatient.bloodType || 'N/A'}</p>                        {medicalRecords.map(record => (
+
+                          </Col>                          <Card key={record.id} className="mb-2">
+
+                          <Col md={4}>                            <Card.Body>
+
+                            <p><strong>Alergias:</strong></p>                              <small className="text-muted">
+
+                            <ul>                                {new Date(record.date).toLocaleDateString()}
+
+                              {selectedPatient.allergies?.map((allergy, i) => (                              </small>
+
+                                <li key={i}>{allergy}</li>                              <p className="mb-1">{record.evolution}</p>
+
+                              )) || <li>Ninguna registrada</li>}                              {record.diagnosis && (
+
+                            </ul>                                <p className="mb-1"><strong>Diagnóstico:</strong> {record.diagnosis}</p>
+
+                          </Col>                              )}
+
+                        </Row>                              {record.treatment && (
+
+                      </Card.Body>                                <p className="mb-1"><strong>Tratamiento:</strong> {record.treatment}</p>
+
+                    </Card>                              )}
+
+                            </Card.Body>
+
+                    <Row>                          </Card>
+
+                      <Col md={6}>                        ))}
+
+                        <Card>                      </div>
+
+                          <Card.Body>                    </Card.Body>
+
+                            <Card.Title>Historia Clínica</Card.Title>                  </Card>
+
+                            <div style={{ maxHeight: '400px', overflowY: 'auto' }}>                </Col>
+
+                              {medicalRecords.map(record => (              </Row>
+
+                                <Card key={record.id} className="mb-2">            </>
+
+                                  <Card.Body>          ) : (
+
+                                    <small className="text-muted">            <Card>
+
+                                      {format(new Date(record.date), "d 'de' MMMM, yyyy", { locale: es })}              <Card.Body className="text-center">
+
+                                    </small>                <h4>Seleccione un paciente para ver sus detalles</h4>
+
+                                    <p className="mb-1">{record.evolution}</p>              </Card.Body>
+
+                                    {record.diagnosis && (            </Card>
+
+                                      <p className="mb-1"><strong>Diagnóstico:</strong> {record.diagnosis}</p>          )}
+
+                                    )}        </Col>
+
+                                    {record.treatment && (      </Row>
+
+                                      <p className="mb-1"><strong>Tratamiento:</strong> {record.treatment}</p>    </Container>
+
+                                    )}  )
+
+                                  </Card.Body>}
+
+                                </Card>
+
+                              ))}export default PanelPacientes
+
+                            </div>
+                          </Card.Body>
+                        </Card>
+                      </Col>
+
+                      <Col md={6}>
+                        <Card>
+                          <Card.Body>
+                            <Card.Title>Historial de Citas</Card.Title>
+                            <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                              {appointments.map(apt => (
+                                <Card key={apt.id} className="mb-2">
+                                  <Card.Body>
+                                    <h6 className="mb-1">
+                                      {format(new Date(apt.date), "d 'de' MMMM, yyyy", { locale: es })}
+                                    </h6>
+                                    <p className="mb-1">
+                                      Hora: {apt.time}<br/>
+                                      Estado: {apt.status}
+                                    </p>
+                                    {apt.observations && (
+                                      <p className="mb-0">
+                                        <strong>Observaciones:</strong> {apt.observations}
+                                      </p>
+                                    )}
+                                  </Card.Body>
+                                </Card>
+                              ))}
+                            </div>
+                          </Card.Body>
+                        </Card>
+                      </Col>
+                    </Row>
+                  </>
+                )}
+              </Tab.Pane>
+            </Tab.Content>
+          </Col>
+        </Row>
+      </Tab.Container>
+
+      {/* Modal de Nuevo Paciente */}
+      <Modal show={showNewPatient} onHide={() => setShowNewPatient(false)} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Registrar Nuevo Paciente</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleCreatePatient}>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Nombre Completo</Form.Label>
+                  <Form.Control
+                    required
+                    type="text"
+                    value={newPatient.name}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+                      setNewPatient({...newPatient, name: e.target.value})}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>DNI</Form.Label>
+                  <Form.Control
+                    required
+                    type="text"
+                    value={newPatient.dni}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+                      setNewPatient({...newPatient, dni: e.target.value})}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Fecha de Nacimiento</Form.Label>
+                  <Form.Control
+                    required
+                    type="date"
+                    value={newPatient.birthDate}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+                      setNewPatient({...newPatient, birthDate: e.target.value})}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Teléfono</Form.Label>
+                  <Form.Control
+                    required
+                    type="tel"
+                    value={newPatient.phone}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+                      setNewPatient({...newPatient, phone: e.target.value})}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    type="email"
+                    value={newPatient.email}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+                      setNewPatient({...newPatient, email: e.target.value})}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Tipo de Sangre</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={newPatient.bloodType}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+                      setNewPatient({...newPatient, bloodType: e.target.value})}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Form.Group className="mb-3">
+              <Form.Label>Alergias (separadas por coma)</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={2}
+                value={newPatient.allergies}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => 
+                  setNewPatient({...newPatient, allergies: e.target.value})}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Antecedentes Médicos</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                value={newPatient.medicalHistory}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => 
+                  setNewPatient({...newPatient, medicalHistory: e.target.value})}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowNewPatient(false)}>
+            Cancelar
+          </Button>
+          <Button variant="primary" onClick={handleCreatePatient}>
+            Guardar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal de Nueva Evolución */}
+      <Modal show={showEvolutionModal} onHide={() => setShowEvolutionModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Nueva Evolución</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group>
+            <Form.Label>Notas de Evolución</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={5}
+              value={evolutionNote}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setEvolutionNote(e.target.value)}
+              placeholder="Ingrese las notas de evolución del paciente..."
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowEvolutionModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="primary" onClick={handleCreateEvolution}>
+            Guardar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </Container>
+  )
+}
+
+export default PanelPacientes

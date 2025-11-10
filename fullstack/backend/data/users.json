@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "email": "admin@hospital.local",
+    "nombre": "Administrador",
+    "role": "admin",
+    "passwordHash": "$2b$08$Swl4o3wnk8SFf9FEb2xBmujvpQgPsQcvJ0LXB/nq.3bGiXlJ1O1E6"
+  },
+  {
+    "id": 2,
+    "email": "doctor@hospital.local",
+    "nombre": "Dr. Pedro",
+    "role": "doctor",
+    "passwordHash": "$2b$08$XY9.9OqOIyXi6Lp4iCLJD.A/.oXme.MueqYCCuz0gt6VzEXxt4vKi"
+  }
+]
