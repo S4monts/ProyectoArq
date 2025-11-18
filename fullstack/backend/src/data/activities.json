@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "action": "create_paciente",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "paciente",
+    "targetId": 1,
+    "details": {},
+    "timestamp": "2025-11-18T21:56:31.399Z"
+  },
+  {
+    "id": 2,
+    "action": "create_encuentro",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "encuentro",
+    "targetId": 1,
+    "details": {
+      "created": {
+        "id": 1,
+        "createdAt": "2025-11-18T21:57:52.676Z",
+        "pacienteId": "01",
+        "doctorId": "1",
+        "fecha": "1999-07-23",
+        "hora": "12:30",
+        "habitacion": "",
+        "cama": "",
+        "motivo": ""
+      }
+    },
+    "timestamp": "2025-11-18T21:57:52.680Z"
+  }
+]
