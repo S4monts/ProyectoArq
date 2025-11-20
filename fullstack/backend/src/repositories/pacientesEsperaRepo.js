@@ -1,14 +1,19 @@
 const { readJSON, writeJSON, nextId } = require('../utils/fileStore');
 
-const FILE = 'doctores.json';
+const FILE = 'pacientes_espera.json';
 
 async function getAll() {
   return await readJSON(FILE);
 }
 
+async function getById(id) {
+  const all = await readJSON(FILE);
+  return all.find((p) => String(p.id) === String(id));
+}
+
 async function create(payload) {
   const all = await readJSON(FILE);
-  const id = nextId(all, 'D-');
+  const id = nextId(all);
   const item = { id, ...payload };
   all.push(item);
   await writeJSON(FILE, all);
@@ -17,8 +22,8 @@ async function create(payload) {
 
 async function remove(id) {
   let all = await readJSON(FILE);
-  all = all.filter((d) => String(d.id) !== String(id));
+  all = all.filter((p) => String(p.id) !== String(id));
   await writeJSON(FILE, all);
 }
 
-module.exports = { getAll, create };
+module.exports = { getAll, getById, create, remove };

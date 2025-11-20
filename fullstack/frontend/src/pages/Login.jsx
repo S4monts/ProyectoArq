@@ -53,6 +53,9 @@ export default function Login() {
                   <button type="button" className={`btn ${role === 'doctor' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setRole('doctor')}>Doctor</button>
                   <button type="button" className={`btn ${role === 'admin' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setRole('admin')}>Admin</button>
                 </div>
+                <div className="mt-2">
+                  <small className="text-muted">¿No tienes cuenta? Contacta a administración.</small>
+                </div>
                 <input type="hidden" name="role" value={role} />
               </div>
               <div className="d-flex justify-content-center">

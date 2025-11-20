@@ -1,11 +1,11 @@
 [
   {
-    "id": 1,
-    "nombre": "Daniel",
-    "apellido": "Sanchez",
-    "dni": "",
-    "edad": "",
-    "habitacion": "",
-    "cama": ""
+    "id": 3,
+    "nombre": "EsperaTest",
+    "apellido": "Paciente",
+    "dni": "12345",
+    "edad": 30,
+    "habitacion": "H1",
+    "cama": "C1"
   }
 ]
