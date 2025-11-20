@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import AppHeader from '../../components/AppHeader'
 import axios from 'axios'
 
 export default function Doctors(){
@@ -21,7 +22,9 @@ export default function Doctors(){
   }
 
   return (
-    <div className="container mt-4">
+    <>
+      <AppHeader showUser={true} />
+      <div className="container mt-4">
       <h4>Doctores</h4>
       <div className="card p-3 mb-3">
         <div className="row">
@@ -32,6 +35,7 @@ export default function Doctors(){
         </div>
       </div>
       <table className="table"><thead><tr><th>ID</th><th>Nombre</th><th>Asignados</th></tr></thead><tbody>{list.map(d=> <tr key={d.id}><td>{d.id}</td><td>{d.nombre} {d.apellido}</td><td>{d.cantidadPacientesAsignados || 0}</td></tr>)}</tbody></table>
-    </div>
+      </div>
+    </>
   )
 }

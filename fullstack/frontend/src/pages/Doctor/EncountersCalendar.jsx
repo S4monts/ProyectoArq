@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import AppHeader from '../../components/AppHeader'
 import axios from 'axios'
 
 export default function EncountersCalendar(){
@@ -12,7 +13,9 @@ export default function EncountersCalendar(){
     if (res.data.ok) setList(res.data.data)
   }
   return (
-    <div className="container mt-4">
+    <>
+      <AppHeader showUser={true} />
+      <div className="container mt-4">
       <h4>Citas</h4>
       <table className="table">
         <thead><tr><th>Fecha</th><th>Hora</th><th>Paciente</th><th>Habitación</th><th>Cama</th></tr></thead>
@@ -20,6 +23,7 @@ export default function EncountersCalendar(){
           {list.map((e)=> <tr key={e.id}><td>{e.fecha}</td><td>{e.hora}</td><td>{e.pacienteId}</td><td>{e.habitacion}</td><td>{e.cama}</td></tr>)}
         </tbody>
       </table>
-    </div>
+      </div>
+    </>
   )
 }

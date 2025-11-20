@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import AppHeader from '../../components/AppHeader'
 import axios from 'axios'
 
 export default function Admins(){
@@ -18,7 +19,9 @@ export default function Admins(){
     if (res.data.ok) setList([res.data.data, ...list])
   }
   return (
-    <div className="container mt-4">
+    <>
+      <AppHeader showUser={true} />
+      <div className="container mt-4">
       <h4>Administradores</h4>
       <div className="card p-3 mb-3">
         <div className="row g-2">
@@ -29,6 +32,7 @@ export default function Admins(){
         </div>
       </div>
       <table className="table"><thead><tr><th>ID</th><th>Usuario</th><th>Nombre</th><th>isSenior</th></tr></thead><tbody>{list.map(a=> <tr key={a.id}><td>{a.id}</td><td>{a.username}</td><td>{a.name}</td><td>{String(!!a.isSenior)}</td></tr>)}</tbody></table>
-    </div>
+      </div>
+    </>
   )
 }

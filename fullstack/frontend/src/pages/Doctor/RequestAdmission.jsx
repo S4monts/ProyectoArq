@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import AppHeader from '../../components/AppHeader'
 import axios from 'axios'
 
 export default function RequestAdmission(){
@@ -19,7 +20,9 @@ export default function RequestAdmission(){
   }
 
   return (
-    <div className="container mt-4">
+    <>
+      <AppHeader showUser={true} />
+      <div className="container mt-4">
       <h4>Solicitar Ingreso</h4>
       {msg && <div className="alert alert-info">{msg}</div>}
       <form onSubmit={submit}>
@@ -33,6 +36,7 @@ export default function RequestAdmission(){
         {form.indicacion && <div className="mb-2"><label className="form-label">Detalle indicación</label><input className="form-control" value={form.indicacionDetalle} onChange={e=>setForm({...form,indicacionDetalle:e.target.value})} required/></div>}
         <button className="btn btn-primary">Enviar</button>
       </form>
-    </div>
+      </div>
+    </>
   )
 }
