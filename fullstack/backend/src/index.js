@@ -27,4 +27,8 @@ app.use('/api/admins', adminsRoutes);
 app.get('/', (req, res) => res.json({ ok: true, data: 'Medicor API' }));
 
 const port = process.env.PORT || 4000;
-app.listen(port, () => console.log(`Medicor backend running on http://localhost:${port}`));
+if (require.main === module) {
+	app.listen(port, () => console.log(`Medicor backend running on http://localhost:${port}`));
+}
+
+module.exports = app;
