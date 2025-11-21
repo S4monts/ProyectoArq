@@ -1,51 +1,52 @@
-# ProyectoArq
-Desarrollo de una Aplicación Web para un sistema simple de hospital - Medicor.
+﻿# ProyectoArq — Medicor
 
-# Medicor (fullstack)
+Proyecto para desarrollar una aplicación web fullstack llamada "Medicor", un sistema de gestión simple para un hospital. Este repositorio contiene dos partes principales:
 
-Run backend:
+- `fullstack/backend`: API en Node.js + Express y persistencia (SQLite/JSON durante la migración).
+- `fullstack/frontend`: aplicación cliente con React + Vite.
+
+En este README encontrarás instrucciones completas para ejecutar el proyecto, migraciones, pruebas y ejemplos de uso.
+
+Contenido
+- Descripción rápida
+- Estructura del proyecto
+- Requisitos
+- Ejecutar localmente (backend y frontend)
+- Migraciones y normalización de la base de datos
+- Pruebas
+- Ejemplos de API
+- Flujo de trabajo (commits / PR)
+- CI sugerido
+- Preguntas frecuentes
+
+Descripción rápida
+Medicor es una app demo para gestionar pacientes, doctores, ingresos y encuentros. La API responde con objetos del formato `{ ok: true, data }` o `{ ok: false, msg }`.
+
+Estructura del proyecto (resumen)
+
+- `fullstack/backend`
+	- `src/` — código fuente del backend (controllers, repositories, routes, utils)
+	- `src/data/` — datos persistidos (JSON y archivo SQLite `medicor.db`)
+	- `src/migrations/` — scripts de creación y migración de tablas normalizadas
+	- `test/` — pruebas de integración con Mocha + Supertest
+- `fullstack/frontend`
+	- `src/` — código React + componentes
+	- `public/` — assets estáticos
+
+Requisitos
+
+- Node.js (recomendado >= 14)
+- npm
+- Opcional: `sqlite3` si quieres inspeccionar la DB desde la terminal
+
+Instalación y ejecución local
+
+1) Backend
 
 ```powershell
 cd fullstack\backend
 npm install
+# Desarrollo
 npm run dev
-```
-
-Run frontend:
-
-```powershell
-cd fullstack\frontend
+# Producción (ejecuta la app)
 npm install
-npm run dev
-```
-
-API examples (use `http://localhost:4000/api`):
-
-- Login (admin demo):
-
-```json
-POST /api/auth/login
-{ "username":"admin", "password":"admin", "role":"admin" }
-
-Response: { ok:true, data: { token, role, userId, name } }
-```
-
-- Create ingreso (doctor):
-
-```json
-POST /api/ingresos
-{ "cama":"A1", "diagnosticoBreve":"Síncope", "indicacion":false, "createdByDoctorId":"D-1" }
-```
-
-- Schedule encuentro:
-
-```json
-POST /api/encuentros
-{ "pacienteId": 1, "doctorId": "D-1", "fecha":"2025-11-20", "hora":"14:00", "motivo":"Consulta" }
-```
-
-Notes:
-
-- All responses use the format `{ ok: true, data }` or `{ ok: false, msg }`.
-- Persistence is file-based under `backend/src/data/`. Do not overwrite existing JSON files.
-- `backend/src/utils/fileStore.js` contains comments to ease migration to a real DB later.
