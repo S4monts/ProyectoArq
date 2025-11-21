@@ -1,0 +1,24 @@
+name: Node.js CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install backend deps
+        run: npm ci
+        working-directory: ./fullstack/backend
+      - name: Create normalized tables
+        run: npm run migrate:create
+        working-directory: ./fullstack/backend
+      - name: Migrate data
+        run: npm run migrate:run
+        working-directory: ./fullstack/backend
+      - name: Run tests
+        run: npm test
+        working-directory: ./fullstack/backend
