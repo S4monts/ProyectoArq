@@ -50,3 +50,13 @@ npm install
 npm run dev
 # Producción (ejecuta la app)
 npm install
+```
+
+1) Frontend
+```powershell
+cd fullstack\frontend
+npm install
+# Desarrollo
+npm run dev
+```
+
