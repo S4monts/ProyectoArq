@@ -1,36 +1,49 @@
-# Medicor Backend — Migration & Test Guide
+git status
+git add -A
+git commit -m "feat(migration): add normalized tables + tests; prefer *_norm in repos"
+git checkout -b feature/sqlite-normalized-migration
+git push -u origin feature/sqlite-normalized-migration
+# Medicor — Backend (Guía de migración y pruebas)
 
-This repository contains the Medicor backend (Express + SQLite). Below are commands and notes to migrate data from legacy JSON files to the normalized SQLite schema, run tests, and prepare a PR.
+Este repositorio contiene la parte backend de Medicor (Node.js + Express) y usa SQLite como almacenamiento.
 
-Prerequisites
+En este README encontrarás instrucciones para:
+- Instalar y ejecutar el servidor en desarrollo.
+- Ejecutar las migraciones que crean tablas normalizadas y migran los datos desde las tablas legacy (JSON).
+- Ejecutar las pruebas de integración (Mocha + Supertest).
+- Preparar un commit y un PR.
+
+Requisitos
 - Node.js >= 14
 - npm
 
-Quick start (development)
+Arranque rápido (desarrollo)
 
-1. Install dependencies
+1) Instalar dependencias
 
 ```powershell
 cd .\fullstack\backend
 npm install
 ```
 
-2. Start local server
+2) Levantar el servidor en modo desarrollo
 
 ```powershell
 npm run dev
-# or
+# o
 npm start
 ```
 
-Database migration
+Base de datos y migraciones
 
-There are two migration helper scripts in `src/migrations`:
+La base de datos SQLite usada por la aplicación es `src/data/medicor.db`.
 
-- `normalize-1-create-normalized-tables.js` — creates normalized tables (`*_norm`).
-- `normalize-2-migrate-data.js` — copies data from the legacy `json` column tables into the normalized tables.
+Hemos añadido dos scripts de migración en `src/migrations`:
 
-Run both in order:
+- `normalize-1-create-normalized-tables.js` — crea las tablas normalizadas (`*_norm`).
+- `normalize-2-migrate-data.js` — copia los datos desde las tablas legacy (que contienen una columna `json`) hacia las tablas normalizadas.
+
+Para ejecutar las migraciones:
 
 ```powershell
 cd .\fullstack\backend
@@ -38,47 +51,100 @@ npm run migrate:create
 npm run migrate:run
 ```
 
-The scripts use the database file at `src/data/medicor.db`. The import script will also create a backup of original JSON files in `src/data_backup/` when the previous import utility was used.
+Notas:
+- Las migraciones no eliminan los datos originales: si ejecutaste previamente la importación desde JSON se guardaron backups en `src/data_backup/`.
+- Tras migrar, los repositorios del proyecto intentan leer desde las tablas `*_norm` y hacen fallback a las tablas legacy para compatibilidad.
 
-Testing
+Pruebas (unitarias / integración)
 
-Unit / integration tests use Mocha + Supertest + Chai (already added to `devDependencies`). Run:
+Se usa Mocha + Supertest + Chai para tests de integración. Para ejecutar las pruebas:
 
 ```powershell
 cd .\fullstack\backend
 npm test
 ```
 
-Notes about tests:
-- Tests assume the Express app is exported from `src/index.js` so they can require it without starting a server.
-- Some tests create unique DNIs to avoid duplicate collisions across runs.
+Notas sobre las pruebas:
+- Las pruebas requieren que `src/index.js` exporte la app de Express (ya está preparado).
+- Algunas pruebas generan DNIs únicos para evitar colisiones entre ejecuciones.
 
-Prepare a commit & PR
+Control de versiones y PR
 
-Suggested git workflow (from repository root):
+Flujo recomendado para enviar los cambios a GitHub (desde el directorio `fullstack/backend` o la raíz del repo):
 
 ```powershell
 cd .\fullstack\backend
-# check changes
-git status
-git add -A
-git commit -m "feat(migration): add normalized tables + tests; prefer *_norm in repos"
-# create branch and push
 git checkout -b feature/sqlite-normalized-migration
+git add -A
+git commit -m "feat(migration): tablas normalizadas, migraciones y tests"
 git push -u origin feature/sqlite-normalized-migration
 ```
 
-Then open a Pull Request in GitHub from `feature/sqlite-normalized-migration` into your main branch. In the PR description, include:
-- Summary of changes (repos preferring `*_norm`, new migration scripts, tests added).
-- How to run migrations and tests (copy the relevant sections from this README).
-- Any manual checks you recommend (e.g., spot-check rows in `src/data/medicor.db`).
+Abre un Pull Request en GitHub desde la rama `feature/sqlite-normalized-migration` hacia la rama principal. En la descripción del PR incluye:
+- Resumen de los cambios (migraciones, repositorios adaptados para `*_norm`, tests añadidos).
+- Cómo ejecutar las migraciones y las pruebas (copiar los comandos clave de este README).
 
-CI suggestion
+Integración continua (sugerencia)
 
-Add a simple GitHub Actions workflow (`.github/workflows/nodejs.yml`) that:
-- Installs Node.js
-- Runs `npm ci`
-- Runs `npm run migrate:create` and `npm run migrate:run` (optional in CI)
-- Runs `npm test`
+Puedes añadir un workflow de GitHub Actions que haga:
+- `npm ci`
+- `npm run migrate:create` y `npm run migrate:run` (opcional si no quieres migrar en CI)
+- `npm test`
 
-That's it — if you want, I can create the PR branch locally and run the `git` commands for you (I will create the commit and provide the exact commands; pushing requires your credentials from your machine). Alternatively I can prepare the patch for you to review/commit.
+Ejemplo rápido de `.github/workflows/nodejs.yml` (opcional):
+
+```yaml
+name: Node.js CI
+
+on: [push, pull_request]
+
+jobs:
+	test:
+		runs-on: ubuntu-latest
+		steps:
+			- uses: actions/checkout@v4
+			- uses: actions/setup-node@v4
+				with:
+					node-version: '18'
+			- run: npm ci
+				working-directory: ./fullstack/backend
+			- run: npm run migrate:create
+				working-directory: ./fullstack/backend
+			- run: npm run migrate:run
+				working-directory: ./fullstack/backend
+			- run: npm test
+				working-directory: ./fullstack/backend
+```
+
+Depuración y operaciones comunes
+
+- Inspeccionar la base de datos SQLite:
+
+```powershell
+# Requiere sqlite3 o una GUI; desde PowerShell con sqlite3 instalado:
+sqlite3 .\fullstack\backend\src\data\medicor.db
+```
+
+- Comprobar tablas normalizadas:
+
+```sql
+SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;
+SELECT COUNT(*) FROM users_norm;
+SELECT COUNT(*) FROM pacientes_norm;
+```
+
+Preguntas frecuentes / recomendaciones
+
+- ¿Actualizo el README aquí o lo hago en mi repositorio local?
+	- Puedes hacerlo en cualquiera de los dos sitios. Si deseas que todo quede versionado y revisionable, lo mejor es editar el archivo en el repositorio y hacer commit/push desde tu máquina (o dejar que yo prepare la rama y los commits y tú los empujes).
+- ¿Quieres que lo suba yo y cree la rama y el commit?
+	- Puedo preparar los cambios y mostrarte los comandos `git` para ejecutar. Para hacer el `push` necesito tus credenciales locales.
+
+Contacto
+
+Si quieres, puedo también:
+- Añadir el archivo de workflow de GitHub Actions.
+- Actualizar el README principal en la raíz del proyecto.
+- Preparar un changelog y un template de PR.
+
+Dime si quieres que empuje estos cambios a una rama (yo prepararé el commit y te daré los comandos) o si prefieres hacerlo tú mismo desde tu equipo.
