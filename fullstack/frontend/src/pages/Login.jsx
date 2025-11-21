@@ -34,10 +34,8 @@ export default function Login() {
   return (
     <>
       <AppHeader showUser={false} />
-      <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <div className="card p-4 text-center">
+      <div className="d-flex justify-content-center align-items-center" style={{minHeight:'100vh',backgroundImage:'url(./src/assets/hospi.jpg)',backgroundSize:'cover',backgroundPosition:'center'}}>
+        <div className="card p-4 text-center" style={{maxWidth:'380px', width:'100%',background:'rgba(255,255,255,0.92)'}}>
             <h3 className="mb-3">Iniciar sesión</h3>
             {error && <div className="alert alert-danger text-center">{error}</div>}
             <form onSubmit={submit}>
@@ -55,6 +53,9 @@ export default function Login() {
                   <button type="button" className={`btn ${role === 'doctor' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setRole('doctor')}>Doctor</button>
                   <button type="button" className={`btn ${role === 'admin' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setRole('admin')}>Admin</button>
                 </div>
+                <div className="mt-2">
+                  <small className="text-muted">¿No tienes cuenta? Contacta a administración.</small>
+                </div>
                 <input type="hidden" name="role" value={role} />
               </div>
               <div className="d-flex justify-content-center">
@@ -63,8 +64,6 @@ export default function Login() {
             </form>
           </div>
         </div>
-      </div>
-    </div>
     </>
   )
 }

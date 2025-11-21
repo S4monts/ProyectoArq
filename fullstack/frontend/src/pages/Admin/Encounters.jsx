@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import AppHeader from '../../components/AppHeader'
 import axios from 'axios'
 
 export default function Encounters(){
@@ -16,7 +17,9 @@ export default function Encounters(){
   }
 
   return (
-    <div className="container mt-4">
+    <>
+      <AppHeader showUser={true} />
+      <div className="container mt-4">
       <h4>Agendar Citas</h4>
       {msg && <div className="alert alert-info">{msg}</div>}
       <div className="row g-2">
@@ -26,6 +29,7 @@ export default function Encounters(){
         <div className="col-md-2"><input className="form-control" placeholder="HH:MM" value={form.hora} onChange={e=>setForm({...form,hora:e.target.value})}/></div>
         <div className="col-md-2"><button className="btn btn-primary" onClick={submit}>Crear</button></div>
       </div>
-    </div>
+      </div>
+    </>
   )
 }

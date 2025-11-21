@@ -1,0 +1,17 @@
+[
+  {
+    "id": "D-1",
+    "nombre": "Demo",
+    "apellido": "Doctor",
+    "email": "doc@example.com",
+    "telefono": "123456",
+    "cantidadPacientesAsignados": 0
+  },
+  {
+    "id": "D-2",
+    "nombre": "Doctor",
+    "apellido": "Juan",
+    "email": "doctor@hospital.local",
+    "telefono": ""
+  }
+]

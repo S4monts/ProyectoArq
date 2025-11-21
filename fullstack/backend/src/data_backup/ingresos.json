@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "status": "pendiente",
+    "createdAt": "2025-11-20T21:36:38.863Z",
+    "nombre": "Paciente",
+    "apellido": "Enfermo",
+    "edad": "30",
+    "diagnosticoBreve": "Gripa",
+    "indicacion": true,
+    "indicacionDetalle": "Acetaminofén",
+    "habitacion": "1",
+    "cama": "1",
+    "createdByDoctorId": "D-2"
+  }
+]

@@ -1,0 +1,325 @@
+[
+  {
+    "id": 1,
+    "action": "create_paciente",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "paciente",
+    "targetId": 1,
+    "details": {},
+    "timestamp": "2025-11-18T21:56:31.399Z"
+  },
+  {
+    "id": 2,
+    "action": "create_encuentro",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "encuentro",
+    "targetId": 1,
+    "details": {
+      "created": {
+        "id": 1,
+        "createdAt": "2025-11-18T21:57:52.676Z",
+        "pacienteId": "01",
+        "doctorId": "1",
+        "fecha": "1999-07-23",
+        "hora": "12:30",
+        "habitacion": "",
+        "cama": "",
+        "motivo": ""
+      }
+    },
+    "timestamp": "2025-11-18T21:57:52.680Z"
+  },
+  {
+    "id": 3,
+    "action": "create_admin",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "admin",
+    "targetId": 2,
+    "details": {},
+    "timestamp": "2025-11-20T14:16:30.716Z"
+  },
+  {
+    "id": 4,
+    "action": "create_admin",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "admin",
+    "targetId": 3,
+    "details": {},
+    "timestamp": "2025-11-20T14:33:25.672Z"
+  },
+  {
+    "id": 5,
+    "action": "create_admin",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "admin",
+    "targetId": 6,
+    "details": {},
+    "timestamp": "2025-11-20T19:21:11.594Z"
+  },
+  {
+    "id": 6,
+    "action": "create_paciente",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "paciente",
+    "targetId": 2,
+    "details": {},
+    "timestamp": "2025-11-20T20:58:58.477Z"
+  },
+  {
+    "id": 7,
+    "action": "create_admin",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "admin",
+    "targetId": 7,
+    "details": {},
+    "timestamp": "2025-11-20T21:03:41.669Z"
+  },
+  {
+    "id": 8,
+    "action": "create_admin",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "admin",
+    "targetId": 8,
+    "details": {},
+    "timestamp": "2025-11-20T21:04:05.753Z"
+  },
+  {
+    "id": 9,
+    "action": "create_admin",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "admin",
+    "targetId": 9,
+    "details": {},
+    "timestamp": "2025-11-20T21:04:48.844Z"
+  },
+  {
+    "id": 10,
+    "action": "create_admin",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "admin",
+    "targetId": 10,
+    "details": {},
+    "timestamp": "2025-11-20T21:07:27.288Z"
+  },
+  {
+    "id": 11,
+    "action": "delete_admin",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "admin",
+    "targetId": "10",
+    "details": {},
+    "timestamp": "2025-11-20T21:11:44.845Z"
+  },
+  {
+    "id": 12,
+    "action": "delete_admin",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "admin",
+    "targetId": "7",
+    "details": {},
+    "timestamp": "2025-11-20T21:12:17.413Z"
+  },
+  {
+    "id": 13,
+    "action": "delete_admin",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "admin",
+    "targetId": "5",
+    "details": {},
+    "timestamp": "2025-11-20T21:12:20.683Z"
+  },
+  {
+    "id": 14,
+    "action": "delete_admin",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "admin",
+    "targetId": "8",
+    "details": {},
+    "timestamp": "2025-11-20T21:12:27.007Z"
+  },
+  {
+    "id": 15,
+    "action": "create_admin",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "admin",
+    "targetId": 10,
+    "details": {},
+    "timestamp": "2025-11-20T21:13:42.585Z"
+  },
+  {
+    "id": 16,
+    "action": "create_admin",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "admin",
+    "targetId": 11,
+    "details": {},
+    "timestamp": "2025-11-20T21:15:15.011Z"
+  },
+  {
+    "id": 17,
+    "action": "delete_admin",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "admin",
+    "targetId": "11",
+    "details": {},
+    "timestamp": "2025-11-20T21:16:48.793Z"
+  },
+  {
+    "id": 18,
+    "action": "delete_admin",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "admin",
+    "targetId": "10",
+    "details": {},
+    "timestamp": "2025-11-20T21:17:22.080Z"
+  },
+  {
+    "id": 19,
+    "action": "create_admin",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "admin",
+    "targetId": 5,
+    "details": {},
+    "timestamp": "2025-11-20T21:17:22.235Z"
+  },
+  {
+    "id": 20,
+    "action": "create_admin",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "admin",
+    "targetId": 7,
+    "details": {},
+    "timestamp": "2025-11-20T21:19:20.170Z"
+  },
+  {
+    "id": 21,
+    "action": "create_doctor",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "doctor",
+    "targetId": "D-2",
+    "details": {},
+    "timestamp": "2025-11-20T21:30:33.976Z"
+  },
+  {
+    "id": 22,
+    "action": "create_ingreso",
+    "byUserId": "D-2",
+    "byUserName": "Doctor Juan",
+    "targetType": "ingreso",
+    "targetId": 1,
+    "details": {
+      "created": {
+        "id": 1,
+        "status": "pendiente",
+        "createdAt": "2025-11-20T21:36:38.863Z",
+        "nombre": "Paciente",
+        "apellido": "Enfermo",
+        "edad": "30",
+        "diagnosticoBreve": "Gripa",
+        "indicacion": true,
+        "indicacionDetalle": "Acetaminofén",
+        "habitacion": "1",
+        "cama": "1",
+        "createdByDoctorId": "D-2"
+      }
+    },
+    "timestamp": "2025-11-20T21:36:38.869Z"
+  },
+  {
+    "id": 23,
+    "action": "create_paciente_espera",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "paciente_espera",
+    "targetId": 1,
+    "details": {},
+    "timestamp": "2025-11-20T21:52:53.141Z"
+  },
+  {
+    "id": 24,
+    "action": "create_paciente_espera",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "paciente_espera",
+    "targetId": 2,
+    "details": {},
+    "timestamp": "2025-11-20T21:53:06.468Z"
+  },
+  {
+    "id": 25,
+    "action": "accept_paciente_espera",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "paciente",
+    "targetId": 3,
+    "details": {},
+    "timestamp": "2025-11-20T21:53:59.108Z"
+  },
+  {
+    "id": 26,
+    "action": "delete_paciente_espera",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "paciente_espera",
+    "targetId": "2",
+    "details": {},
+    "timestamp": "2025-11-20T21:54:04.213Z"
+  },
+  {
+    "id": 27,
+    "action": "delete_paciente",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "paciente",
+    "targetId": "1",
+    "details": {
+      "removedEncuentros": 0,
+      "changedIngresos": false
+    },
+    "timestamp": "2025-11-20T22:00:42.899Z"
+  },
+  {
+    "id": 28,
+    "action": "delete_paciente",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "paciente",
+    "targetId": "2",
+    "details": {
+      "removedEncuentros": 0,
+      "changedIngresos": false
+    },
+    "timestamp": "2025-11-20T22:00:45.855Z"
+  },
+  {
+    "id": 29,
+    "action": "create_paciente_espera",
+    "byUserId": 1,
+    "byUserName": "Admin Demo",
+    "targetType": "paciente_espera",
+    "targetId": 1,
+    "details": {},
+    "timestamp": "2025-11-20T22:01:33.833Z"
+  }
+]

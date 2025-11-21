@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "nombre": "TestCreator",
+    "apellido": "Wait",
+    "dni": "W123",
+    "edad": 40,
+    "habitacion": "H2",
+    "cama": "C2",
+    "createdBy": 2
+  }
+]

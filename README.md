@@ -1,4 +1,4 @@
-﻿# ProyectoArq — Medicor
+
 
 Proyecto para desarrollar una aplicación web fullstack llamada "Medicor", un sistema de gestión simple para un hospital. Este repositorio contiene dos partes principales:
 
@@ -50,3 +50,5 @@ npm install
 npm run dev
 # Producción (ejecuta la app)
 npm install
+
+

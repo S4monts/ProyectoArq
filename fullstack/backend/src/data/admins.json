@@ -1,9 +1,0 @@
-[
-  {
-    "id": 1,
-    "username": "admin",
-    "password": "admin",
-    "name": "Admin Demo",
-    "isSenior": true
-  }
-]
