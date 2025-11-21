@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import AppHeader from '../../components/AppHeader'
 import axios from 'axios'
 
 export default function PatientHistory(){
@@ -29,7 +30,9 @@ export default function PatientHistory(){
   }
 
   return (
-    <div className="container mt-4">
+    <>
+      <AppHeader showUser={true} />
+      <div className="container mt-4">
       <h4>Historia Paciente</h4>
       <div className="input-group mb-3"><input className="form-control" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Ingrese pacienteId"/><button className="btn btn-primary" onClick={search}>Buscar</button></div>
       {msg && <div className="alert alert-warning">{msg}</div>}
@@ -39,6 +42,7 @@ export default function PatientHistory(){
       <ul className="list-group">
         {hist.map((h)=> <li key={h.id} className="list-group-item">{h.timestamp}: {h.nota} <br/><small>by {h.authorId}</small></li>)}
       </ul>
-    </div>
+      </div>
+    </>
   )
 }

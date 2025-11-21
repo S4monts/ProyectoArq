@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "username": "admin",
+    "password": "admin",
+    "name": "Admin Demo",
+    "isSenior": true
+  },
+  {
+    "id": 2,
+    "username": "dan",
+    "password": "dan",
+    "name": "daniel sal",
+    "isSenior": false
+  },
+  {
+    "id": 3,
+    "username": "super",
+    "password": "super",
+    "name": "Super Administrador",
+    "isSenior": true
+  },
+  {
+    "id": 4,
+    "username": "dan2",
+    "password": "dan2",
+    "name": "Dan Two",
+    "isSenior": false
+  },
+  {
+    "id": 6,
+    "username": "senior1",
+    "password": "senior1",
+    "name": "Senior One",
+    "isSenior": true
+  },
+  {
+    "id": 9,
+    "username": "sam",
+    "password": "sam",
+    "name": "sam",
+    "isSenior": true
+  },
+  {
+    "id": 5,
+    "username": "ui_reuse_test",
+    "password": "reuse",
+    "name": "UI Reuse Test",
+    "isSenior": false
+  },
+  {
+    "id": 7,
+    "username": "rex",
+    "password": "rex",
+    "name": "Rex-cycle",
+    "isSenior": false
+  }
+]

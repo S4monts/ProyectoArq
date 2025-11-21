@@ -7,5 +7,6 @@ router.use(authMiddleware);
 
 router.get('/', doctoresController.listDoctores);
 router.post('/', doctoresController.createDoctor);
+router.delete('/:id', doctoresController.deleteDoctor);
 
 module.exports = router;

@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import logo from '../assets/Medicor.png'
 
 export default function AppHeader({ showUser = true }) {
   const navigate = useNavigate()
@@ -20,12 +21,23 @@ export default function AppHeader({ showUser = true }) {
     navigate('/login')
   }
 
+  // Validación de usuario
+  const token = localStorage.getItem('token')
+  const role = localStorage.getItem('role')
+  // Función para redirigir al panel según el rol
+  function goToPanel() {
+    if (role === 'admin') navigate('/admin')
+    else if (role === 'doctor') navigate('/doctor')
+  }
+
   return (
-    <header className="w-100 d-flex align-items-center px-4 py-3 border-bottom bg-light justify-content-between" style={{minHeight:'80px'}}>
-      <div className="d-flex align-items-center">
-        {/* Reemplaza src por tu logo en src/assets/logo.png si lo tienes */}
-        <img src="https://via.placeholder.com/48" alt="Logo Medicor" style={{width:48,height:48,objectFit:'cover'}} className="me-3" />
-        <span className="h2 mb-0 fw-bold">Medicor</span>
+    <header className="w-100 d-flex align-items-center px-4 border-bottom justify-content-between" style={{background:'#c1ff72',height:'auto'}}>
+      <div className="d-flex align-items-center" style={{margin:'0'}}>
+        {token ? (
+          <img src={logo} alt="Logo Medicor" style={{width:160,height:50,objectFit:'contain',margin:'0',padding:'0',display:'block',cursor:'pointer'}} onClick={goToPanel} />
+        ) : (
+          <img src={logo} alt="Logo Medicor" style={{width:160,height:50,objectFit:'contain',margin:'0',padding:'0',display:'block',opacity:0.7,cursor:'default'}} />
+        )}
       </div>
       {showUser && (
         <div className="position-relative" ref={menuRef}>

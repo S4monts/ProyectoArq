@@ -5,14 +5,21 @@
   "license": "MIT",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "test": "mocha --timeout 5000 --exit ./test/**/*.test.js",
+    "migrate:create": "node src/migrations/normalize-1-create-normalized-tables.js",
+    "migrate:run": "node src/migrations/normalize-2-migrate-data.js"
   },
   "dependencies": {
+    "better-sqlite3": "^12.4.1",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "mocha": "^10.2.0",
+    "supertest": "^6.3.3",
+    "chai": "^4.3.7"
   }
 }
