@@ -5,7 +5,7 @@ export default function Patients(){
   const [list, setList] = useState([])
   const [form, setForm] = useState({ nombre:'', apellido:'', dni:'', edad:'', habitacion:'', cama:'' })
 
-  useEffect(()=>{ fetchList() }, [])
+  useEffect(()=>{  void fetchList() }, [])
   async function fetchList(){
     const token = localStorage.getItem('token')
     const base = import.meta.env.VITE_API_URL || 'http://localhost:4000/api'
