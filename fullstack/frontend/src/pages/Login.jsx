@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import AppHeader from '../components/AppHeader'
+import { storeSession } from '../utils/auth'
 
 export default function Login() {
   const [username, setUsername] = useState('')
@@ -17,11 +18,8 @@ export default function Login() {
       const base = import.meta.env.VITE_API_URL || 'http://localhost:4000/api'
       const res = await axios.post(`${base}/auth/login`, { username, password, role })
       if (res.data.ok) {
-        const { token, role: r, name, userId } = res.data.data
-        localStorage.setItem('token', token)
-        localStorage.setItem('role', r)
-        localStorage.setItem('name', name)
-        localStorage.setItem('userId', userId)
+        const { role: r } = res.data.data
+        storeSession(res.data.data)
         navigate(r === 'admin' ? '/admin' : '/doctor')
       } else {
         setError(res.data.msg)

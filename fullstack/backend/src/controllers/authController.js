@@ -1,11 +1,12 @@
 const usersRepo = require('../repositories/usersRepo');
+const { createToken } = require('../utils/tokens');
 
 async function login(req, res) {
   const { username, password, role } = req.body || {};
   if (!username || !password || !role) return res.status(400).json({ ok: false, msg: 'username, password and role required' });
   const user = await usersRepo.findByCredentials(username, password, role);
   if (!user) return res.status(401).json({ ok: false, msg: 'Invalid credentials' });
-  const token = `demo-${user.id}`; // demo token
+  const token = createToken(user.id);
   return res.json({ ok: true, data: { token, role: user.role, userId: user.id, name: user.name || user.username } });
 }
 
