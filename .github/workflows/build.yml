@@ -30,4 +30,5 @@ jobs:
           args: >
             -Dsonar.organization=sarah-montes
             -Dsonar.projectKey=S4monts_ProyectoArq
+            -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/*.min.js
             -Dsonar.coverage.exclusions=**/*.js,**/*.jsx

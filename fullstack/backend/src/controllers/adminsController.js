@@ -2,6 +2,7 @@ const adminsRepo = require('../repositories/adminsRepo');
 const { readJSON } = require('../utils/fileStore');
 const { respondOK, respondError } = require('../utils/validators');
 const activities = require('../utils/activities');
+const crypto = require('crypto');
 
 async function checkSenior(req) {
   // helper: ensure the current user is an admin and isSenior
@@ -21,7 +22,8 @@ async function createAdmin(req, res) {
   if (!senior) return respondError(res, 'Requires isAdminSenior', 403);
   const { username, password, name, isSenior } = req.body || {};
   if (!username || !password || !name) return respondError(res, 'username, password, name required');
-  const created = await adminsRepo.create({ username, password, name, isSenior: !!isSenior });
+  const credentialDigest = crypto.createHash('sha256').update(String(password)).digest('hex');
+  const created = await adminsRepo.create({ username, credentialDigest, name, isSenior: !!isSenior });
   await activities.log('create_admin', req.user.id, req.user.name, 'admin', created.id);
   return respondOK(res, created);
 }
@@ -30,7 +32,11 @@ async function updateAdmin(req, res) {
   const senior = await checkSenior(req);
   if (!senior) return respondError(res, 'Requires isAdminSenior', 403);
   const id = req.params.id;
-  const patch = req.body || {};
+  const patch = { ...(req.body || {}) };
+  if (patch.password) {
+    patch.credentialDigest = crypto.createHash('sha256').update(String(patch.password)).digest('hex');
+    delete patch.password;
+  }
   const updated = await adminsRepo.update(id, patch);
   if (!updated) return respondError(res, 'Admin not found', 404);
   await activities.log('update_admin', req.user.id, req.user.name, 'admin', id, { patch });
