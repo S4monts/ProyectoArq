@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { getToken } from '../../utils/auth'
 
 export default function Doctors(){
   const [list, setList] = useState([])
@@ -7,14 +8,14 @@ export default function Doctors(){
 
   useEffect(()=>{ fetchList() }, [])
   async function fetchList(){
-    const token = localStorage.getItem('token')
+    const token = getToken()
     const base = import.meta.env.VITE_API_URL || 'http://localhost:4000/api'
     const res = await axios.get(`${base}/doctores`, { headers: { Authorization: `Bearer ${token}` } })
     if (res.data.ok) setList(res.data.data)
   }
 
   async function create(){
-    const token = localStorage.getItem('token')
+    const token = getToken()
     const base = import.meta.env.VITE_API_URL || 'http://localhost:4000/api'
     const res = await axios.post(`${base}/doctores`, form, { headers: { Authorization: `Bearer ${token}` } })
     if (res.data.ok) { setList([res.data.data, ...list]); setForm({ nombre:'', apellido:'', email:'', telefono:'' }) }

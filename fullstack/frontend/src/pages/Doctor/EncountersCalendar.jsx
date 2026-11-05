@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { authHeaders, safeId } from '../../utils/auth'
+import { authHeaders, getStored, safeId } from '../../utils/auth'
 
 export default function EncountersCalendar(){
   const [list, setList] = useState([])
   useEffect(()=>{ void fetchList() }, [])
   async function fetchList(){
-    const doctorId = safeId(localStorage.getItem('userId')) || 'D-1'
+    const doctorId = safeId(getStored('userId')) || 'D-1'
     const base = import.meta.env.VITE_API_URL || 'http://localhost:4000/api'
     const res = await axios.get(`${base}/encuentros`, { params: { doctorId }, headers: authHeaders() })
     if (res.data.ok) setList(res.data.data)

@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { getToken } from '../../utils/auth'
 
 export default function Admins(){
   const [list, setList] = useState([])
   const [form, setForm] = useState({ username:'', password:'', name:'', isSenior:false })
   useEffect(()=>{ fetchList() }, [])
   async function fetchList(){
-    const token = localStorage.getItem('token')
+    const token = getToken()
     const base = import.meta.env.VITE_API_URL || 'http://localhost:4000/api'
     const res = await axios.get(`${base}/admins`, { headers: { Authorization: `Bearer ${token}` } })
     if (res.data.ok) setList(res.data.data)
   }
   async function create(){
-    const token = localStorage.getItem('token')
+    const token = getToken()
     const base = import.meta.env.VITE_API_URL || 'http://localhost:4000/api'
     const res = await axios.post(`${base}/admins`, form, { headers: { Authorization: `Bearer ${token}` } })
     if (res.data.ok) setList([res.data.data, ...list])

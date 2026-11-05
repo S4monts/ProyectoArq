@@ -1,9 +1,10 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { getStored } from '../utils/auth'
 
 export default function Header() {
   const navigate = useNavigate();
-  const name = localStorage.getItem('name') || 'Usuario';
+  const name = getStored('name') || 'Usuario';
 
   function logout() {
     localStorage.removeItem('token');

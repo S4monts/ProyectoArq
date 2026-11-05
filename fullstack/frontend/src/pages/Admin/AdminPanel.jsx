@@ -1,12 +1,13 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import AppHeader from '../../components/AppHeader'
+import { getStored } from '../../utils/auth'
 
 export default function AdminPanel(){
   const navigate = useNavigate()
   const [showMenu, setShowMenu] = useState(false)
   const menuRef = useRef()
-  const username = localStorage.getItem('name') || localStorage.getItem('username') || 'Usuario'
+  const username = getStored('name') || getStored('username') || 'Usuario'
 
   // Cerrar menú si se hace clic fuera
   React.useEffect(() => {
