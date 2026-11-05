@@ -1,4 +1,5 @@
 const { readJSON, writeJSON, nextId } = require('../utils/fileStore');
+const crypto = require('crypto');
 
 const FILE = 'users.json';
 
@@ -8,7 +9,8 @@ async function getAll() {
 
 async function findByCredentials(username, password, role) {
   const all = await readJSON(FILE);
-  return all.find((u) => u.username === username && u.password === password && u.role === role);
+  const passwordHash = crypto.createHash('sha256').update(String(password)).digest('hex');
+  return all.find((u) => u.username === username && u.passwordHash === passwordHash && u.role === role);
 }
 
 async function getById(id) {

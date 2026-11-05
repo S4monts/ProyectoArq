@@ -6,7 +6,15 @@ const path = require('path');
 
 const dataDir = path.join(__dirname, '..', 'data');
 
+function safeFilename(filename) {
+  if (typeof filename !== 'string' || filename !== path.basename(filename) || filename.includes('\0')) {
+    throw new Error('Invalid data filename');
+  }
+  return filename;
+}
+
 async function ensureFile(filename, initialData = []) {
+  filename = safeFilename(filename);
   const filePath = path.join(dataDir, filename);
   try {
     await fs.access(filePath);
@@ -18,6 +26,7 @@ async function ensureFile(filename, initialData = []) {
 }
 
 async function readJSON(filename) {
+  filename = safeFilename(filename);
   const filePath = path.join(dataDir, filename);
   await ensureFile(filename, []);
   const raw = await fs.readFile(filePath, 'utf8');
@@ -29,6 +38,7 @@ async function readJSON(filename) {
 }
 
 async function writeJSON(filename, data) {
+  filename = safeFilename(filename);
   const filePath = path.join(dataDir, filename);
   await ensureFile(filename, data);
   await fs.writeFile(filePath, JSON.stringify(data, null, 2));

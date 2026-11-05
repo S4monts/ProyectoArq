@@ -41,6 +41,12 @@ Requisitos
 
 Instalación y ejecución local
 
+Configuración de seguridad del backend
+
+- Define `AUTH_SECRET` con un valor aleatorio y persistente en producción para firmar los tokens de sesión.
+- Define `CORS_ORIGINS` con una lista separada por comas de los orígenes permitidos, por ejemplo `https://medicor.example.com`.
+- Las cuentas demo conservan las credenciales de desarrollo, pero sus contraseñas se almacenan como hashes en `fullstack/backend/src/data/users.json`. Sustitúyelas antes de publicar el sistema.
+
 1) Backend
 
 ```powershell
@@ -59,4 +65,3 @@ npm install
 # Desarrollo
 npm run dev
 ```
-

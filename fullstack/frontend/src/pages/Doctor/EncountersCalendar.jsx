@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { authHeaders, safeId } from '../../utils/auth'
 
 export default function EncountersCalendar(){
   const [list, setList] = useState([])
-  useEffect(()=>{ fetchList() }, [])
+  useEffect(()=>{ void fetchList() }, [])
   async function fetchList(){
-    const token = localStorage.getItem('token')
-    const doctorId = localStorage.getItem('userId') || 'D-1'
+    const doctorId = safeId(localStorage.getItem('userId')) || 'D-1'
     const base = import.meta.env.VITE_API_URL || 'http://localhost:4000/api'
-    const res = await axios.get(`${base}/encuentros?doctorId=${doctorId}`, { headers: { Authorization: `Bearer ${token}` } })
+    const res = await axios.get(`${base}/encuentros`, { params: { doctorId }, headers: authHeaders() })
     if (res.data.ok) setList(res.data.data)
   }
   return (
