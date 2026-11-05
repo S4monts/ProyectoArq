@@ -1,11 +1,12 @@
 import React, { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { getStored } from '../utils/auth'
 
 export default function AppHeader({ showUser = true }) {
   const navigate = useNavigate()
   const [showMenu, setShowMenu] = useState(false)
   const menuRef = useRef()
-  const username = localStorage.getItem('name') || localStorage.getItem('username') || 'Usuario'
+  const username = getStored('name') || getStored('username') || 'Usuario'
 
   React.useEffect(() => {
     function handleClick(e) {

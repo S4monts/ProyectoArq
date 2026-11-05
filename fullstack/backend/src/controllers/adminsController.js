@@ -22,8 +22,8 @@ async function createAdmin(req, res) {
   if (!senior) return respondError(res, 'Requires isAdminSenior', 403);
   const { username, password, name, isSenior } = req.body || {};
   if (!username || !password || !name) return respondError(res, 'username, password, name required');
-  const credentialDigest = crypto.createHash('sha256').update(String(password)).digest('hex');
-  const created = await adminsRepo.create({ username, credentialDigest, name, isSenior: !!isSenior });
+  const digest = crypto.createHash('sha256').update(String(password)).digest('hex');
+  const created = await adminsRepo.create({ username, digest, name, isSenior: !!isSenior });
   await activities.log('create_admin', req.user.id, req.user.name, 'admin', created.id);
   return respondOK(res, created);
 }
@@ -34,7 +34,7 @@ async function updateAdmin(req, res) {
   const id = req.params.id;
   const patch = { ...(req.body || {}) };
   if (patch.password) {
-    patch.credentialDigest = crypto.createHash('sha256').update(String(patch.password)).digest('hex');
+    patch.digest = crypto.createHash('sha256').update(String(patch.password)).digest('hex');
     delete patch.password;
   }
   const updated = await adminsRepo.update(id, patch);

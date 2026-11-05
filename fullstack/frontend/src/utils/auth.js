@@ -1,6 +1,23 @@
+const storage = window.localStorage
+
+export function getStored(key) {
+  const value = storage.getItem(key)
+  if (!value) return null
+  try {
+    return decodeURIComponent(value)
+  } catch {
+    storage.removeItem(key)
+    return null
+  }
+}
+
+function writeStored(key, value) {
+  storage.setItem(key, encodeURIComponent(String(value)))
+}
+
 export function getToken() {
-  const token = localStorage.getItem('token')
-  return token && token.split('.').length === 2 ? token : null
+  const token = getStored('token')
+  return token && /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(token) ? token : null
 }
 
 export function authHeaders() {
@@ -13,10 +30,10 @@ export function storeSession(data) {
     throw new Error('Respuesta de autenticación inválida')
   }
   if (!/^[\w-]+$/.test(String(data.userId))) throw new Error('Identificador de usuario inválido')
-  localStorage.setItem('token', data.token)
-  localStorage.setItem('role', data.role)
-  localStorage.setItem('name', String(data.name || '').slice(0, 200))
-  localStorage.setItem('userId', String(data.userId))
+  writeStored('token', data.token)
+  writeStored('role', data.role)
+  writeStored('name', String(data.name || '').slice(0, 200))
+  writeStored('userId', String(data.userId))
 }
 
 export function safeId(value) {

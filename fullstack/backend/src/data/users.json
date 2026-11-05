@@ -2,14 +2,14 @@
   {
     "id": 1,
     "username": "admin",
-    "credentialDigest": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
+    "digest": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
     "role": "admin",
     "name": "Admin Demo"
   },
   {
     "id": "D-1",
     "username": "doctor",
-    "credentialDigest": "72f4be89d6ebab1496e21e38bcd7c8ca0a68928af3081ad7dff87e772eb350c2",
+    "digest": "72f4be89d6ebab1496e21e38bcd7c8ca0a68928af3081ad7dff87e772eb350c2",
     "role": "doctor",
     "name": "Dr Demo"
   }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import { authHeaders, safeId } from '../../utils/auth'
+import { authHeaders, getStored, safeId } from '../../utils/auth'
 
 export default function PatientHistory(){
   const [query, setQuery] = useState('')
@@ -24,7 +24,7 @@ export default function PatientHistory(){
     const id = safeId(pacienteId)
     if (!id) return setMsg('pacienteId inválido')
     const base = import.meta.env.VITE_API_URL || 'http://localhost:4000/api'
-    const res = await axios.post(`${base}/historias/${encodeURIComponent(id)}/evoluciones`, { encuentroId: 0, nota, procedimientoMedicamento: false, authorId: localStorage.getItem('userId') }, { headers: authHeaders() })
+    const res = await axios.post(`${base}/historias/${encodeURIComponent(id)}/evoluciones`, { encuentroId: 0, nota, procedimientoMedicamento: false, authorId: getStored('userId') }, { headers: authHeaders() })
     if (res.data.ok) setHist((s)=>[res.data.data, ...s])
   }
 

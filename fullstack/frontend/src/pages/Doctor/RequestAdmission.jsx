@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+import { getStored } from '../../utils/auth'
 
 export default function RequestAdmission(){
   const [form, setForm] = useState({ cama: '', habitacion: '', nombre: '', apellido: '', edad:'', diagnosticoBreve:'', indicacion:false, indicacionDetalle:'' })
@@ -10,9 +11,8 @@ export default function RequestAdmission(){
     if (!form.cama && form.urgencia === true) return setMsg('cama es obligatorio para urgencia')
     if (!form.diagnosticoBreve && !form.nombre) return setMsg('diagnosticoBreve o nombre requerido')
     try{
-      const token = localStorage.getItem('token')
       const base = import.meta.env.VITE_API_URL || 'http://localhost:4000/api'
-      const res = await axios.post(`${base}/ingresos`, { ...form, createdByDoctorId: localStorage.getItem('userId') || localStorage.getItem('name') }, { headers: { Authorization: `Bearer ${token}` } })
+      const res = await axios.post(`${base}/ingresos`, { ...form, createdByDoctorId: getStored('userId') || getStored('name') }, { headers: { Authorization: `Bearer ${getStored('token')}` } })
       if (res.data.ok) setMsg('Solicitud creada')
       else setMsg(res.data.msg)
     }catch(err){ setMsg(err.response?.data?.msg || err.message) }

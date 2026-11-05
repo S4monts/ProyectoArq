@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+import { getToken } from '../../utils/auth'
 
 export default function Encounters(){
   const [form, setForm] = useState({ pacienteId:'', doctorId:'', fecha:'', hora:'', habitacion:'', cama:'', motivo:'' })
@@ -8,7 +9,7 @@ export default function Encounters(){
   async function submit(){
     try{
       const base = import.meta.env.VITE_API_URL || 'http://localhost:4000/api'
-      const token = localStorage.getItem('token')
+      const token = getToken()
       const res = await axios.post(`${base}/encuentros`, form, { headers: { Authorization: `Bearer ${token}` } })
       if (res.data.ok) setMsg('Encuentro creado')
       else setMsg(res.data.msg)

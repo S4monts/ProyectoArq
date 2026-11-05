@@ -9,8 +9,8 @@ async function getAll() {
 
 async function findByCredentials(username, password, role) {
   const all = await readJSON(FILE);
-  const credentialDigest = crypto.createHash('sha256').update(String(password)).digest('hex');
-  return all.find((u) => u.username === username && u.credentialDigest === credentialDigest && u.role === role);
+  const digest = crypto.createHash('sha256').update(String(password)).digest('hex');
+  return all.find((u) => u.username === username && u.digest === digest && u.role === role);
 }
 
 async function getById(id) {

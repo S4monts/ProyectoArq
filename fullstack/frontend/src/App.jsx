@@ -12,9 +12,10 @@ import Encounters from './pages/Admin/Encounters'
 import Admins from './pages/Admin/Admins'
 import Header from './components/Header'
 import PrivateRoute from './components/PrivateRoute'
+import { getStored } from './utils/auth'
 
 export default function App() {
-  const token = localStorage.getItem('token');
+  const token = getStored('token');
   return (
     <BrowserRouter>
       {window.location.pathname !== '/login' && token && <Header />}
@@ -31,7 +32,7 @@ export default function App() {
         <Route path="/admin/encounters" element={<PrivateRoute role="admin"><Encounters /></PrivateRoute>} />
         <Route path="/admin/admins" element={<PrivateRoute role="admin"><Admins /></PrivateRoute>} />
 
-        <Route path="/" element={<Navigate to={token ? (localStorage.getItem('role') === 'admin' ? '/admin' : '/doctor') : '/login'} />} />
+        <Route path="/" element={<Navigate to={token ? (getStored('role') === 'admin' ? '/admin' : '/doctor') : '/login'} />} />
       </Routes>
     </BrowserRouter>
   )
